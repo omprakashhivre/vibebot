@@ -69,11 +69,12 @@ export default function AuthForm() {
       })
       .then((res) => {
         const data = res.data
-        console.log("user data ===== > > > >> > > ", data);
+        // console.log("user data ===== > > > >> > > ", data);
         
         Cookies.set("access_token", data.access_token);
         Cookies.set("username", data.username);
-        // sessionStorage.setItem("access_token", data.access_token);
+        sessionStorage.setItem("access_token", data.access_token);
+        sessionStorage.setItem("username", data.username);
         // setTimeout(() => {
           alert("Login successful")
           router.push("/interact")        

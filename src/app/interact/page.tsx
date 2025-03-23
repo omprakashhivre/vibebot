@@ -14,21 +14,41 @@ import { FileDetails } from "@/components/file-details"
 import Cookies from "js-cookie"
 import { v4 as uuidv4 } from 'uuid';
 import { Send, Bot, User, ChevronDown, ChevronUp, PanelRight, PanelLeft, X, Maximize2, Minimize2, LogOut, Upload, FileText, UploadCloud } from 'lucide-react'
-import { 
-  DropdownMenu, DropdownMenuContent, 
-  DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
-import { 
-  Dialog, DialogClose, DialogContent, DialogDescription, 
-  DialogHeader, DialogTitle 
+import {
+  Dialog, DialogClose, DialogContent, DialogDescription,
+  DialogHeader, DialogTitle
 } from "@/components/ui/dialog"
 import Spinner from "@/components/spinner"
+import verifyToken from "@/lib/verify-token"
 
 
 export default function ChatInterface() {
+
   const router = useRouter()
+  useEffect(() => {
+    const token = sessionStorage.getItem("access_token") || "";
+    if (!token) {
+      router.push("/");
+    }
+    verifyToken(token)
+      .then((res) => {
+        // console.log(res);
+        
+        if (!res || !res.username) {
+          router.push("/");
+        }
+        return
+      })
+      .catch((_err) => {
+        router.push("/");
+      })
+  }, []);
   const [file, setFile] = useState<File | null>(null)
   const [messages, setMessages] = useState([
     {
@@ -47,7 +67,7 @@ export default function ChatInterface() {
   const [transcript, setTranscript] = useState<string | null>(null)
   const [transcriptId, setTranscriptId] = useState<string>("")
   const [summary, setSummary] = useState<string | null>(null)
-  
+
   // Scroll to bottom of messages when new messages are added
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -73,7 +93,7 @@ export default function ChatInterface() {
       } else if (file.type.includes("audio") || file.type.includes("video")) {
         apiUrl = "/api/v1/transcribe"
       }
-      
+
       setLoading(true)
       const response = await axiosInstance.post(apiUrl, formData, {
         headers: {
@@ -83,7 +103,7 @@ export default function ChatInterface() {
         },
       })
       setLoading(false)
-      
+
       const { transcript, summary, transcript_id } = response.data
       setTranscript(transcript)
       setSummary(summary)
@@ -163,9 +183,9 @@ export default function ChatInterface() {
       const data = response.data
 
       // Replace thinking message with actual response
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === thinkingMessageId 
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === thinkingMessageId
             ? { ...msg, content: data.answer || "No valid response received." }
             : msg
         )
@@ -173,18 +193,18 @@ export default function ChatInterface() {
     } catch (error) {
       console.error("API Error:", error)
       // Replace thinking message with error message
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === thinkingMessageId 
-            ? { 
-                ...msg, 
-                content: "⚠️ Sorry, something went wrong while processing your question. Please try again later."
-              }
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === thinkingMessageId
+            ? {
+              ...msg,
+              content: "⚠️ Sorry, something went wrong while processing your question. Please try again later."
+            }
             : msg
         )
       )
     }
-    
+
     inputRef.current?.focus()
   }
 
@@ -205,13 +225,13 @@ export default function ChatInterface() {
   const toggleChatPosition = () => {
     setIsChatFloating(!isChatFloating)
   }
-  
+
   const handleRemoveFile = () => {
     setFile(null)
     setTranscript(null)
     setSummary(null)
     setTranscriptId("")
-    
+
     setMessages([
       ...messages,
       {
@@ -221,7 +241,7 @@ export default function ChatInterface() {
       },
     ])
   }
-  
+
   const handleUploadNew = () => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -234,9 +254,9 @@ export default function ChatInterface() {
     }
     input.click()
   }
-  
+
   const fallUserName = Cookies.get("username") || "XX"
-  
+
   const handleLogout = () => {
     Cookies.remove("username")
     Cookies.remove("access_token")
@@ -249,39 +269,39 @@ export default function ChatInterface() {
       {/* Header */}
       <header className="border-b p-4 bg-background flex justify-between items-center z-10">
         <h1 className="text-xl font-bold md:text-2xl">Multi-Modal Chat Interface</h1>
-        
+
         <div className="flex items-center gap-2">
           {file && (
             <div className="hidden sm:flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleRemoveFile}
                 className="text-destructive border-destructive hover:bg-destructive/10"
               >
                 <X className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Remove File</span>
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleUploadNew}
               >
                 <UploadCloud className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Upload New</span>
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={toggleChatPosition} 
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleChatPosition}
                 className="hidden md:flex"
               >
                 {isChatFloating ? <PanelLeft className="h-4 w-4 mr-2" /> : <PanelRight className="h-4 w-4 mr-2" />}
                 <span className="hidden lg:inline">{isChatFloating ? "Dock Chat" : "Float Chat"}</span>
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={toggleChat}
               >
                 {isChatOpen ? <Minimize2 className="h-4 w-4 mr-2" /> : <Maximize2 className="h-4 w-4 mr-2" />}
@@ -289,7 +309,7 @@ export default function ChatInterface() {
               </Button>
             </div>
           )}
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer h-8 w-8">
@@ -303,7 +323,7 @@ export default function ChatInterface() {
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              
+
               {file && (
                 <>
                   <DropdownMenuSeparator />
@@ -317,7 +337,7 @@ export default function ChatInterface() {
                   </DropdownMenuItem>
                 </>
               )}
-              
+
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" />
@@ -346,7 +366,7 @@ export default function ChatInterface() {
               </Button>
             </div>
           )}
-          
+
           {/* File Display Area */}
           {!file ? (
             <div className="flex-1 flex items-center justify-center p-6">
@@ -360,13 +380,12 @@ export default function ChatInterface() {
               )}
             </div>
           )}
-          
+
           {/* Chat Interface (non-floating) */}
           {!isChatFloating && file && (
             <div
-              className={`border-t transition-all max-h-[80%] duration-300 ease-in-out ${
-                isChatOpen ? "h-[450px]" : "h-[40px]"
-              } flex flex-col`}
+              className={`border-t transition-all max-h-[80%] duration-300 ease-in-out ${isChatOpen ? "h-[450px]" : "h-[40px]"
+                } flex flex-col`}
             >
               <div className="p-2 border-b flex justify-between items-center bg-muted/30">
                 <span className="font-medium">💬 Chat</span>
@@ -374,7 +393,7 @@ export default function ChatInterface() {
                   {isChatOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
                 </Button>
               </div>
-              
+
               {isChatOpen && (
                 <>
                   <ScrollArea className="flex-1 p-4 h-full overflow-y-auto">
@@ -382,26 +401,24 @@ export default function ChatInterface() {
                       {messages.map((message) => (
                         <div
                           key={message.id}
-                          className={`flex items-start gap-3 ${
-                            message.role === "user" ? "justify-end" : ""
-                          }`}
+                          className={`flex items-start gap-3 ${message.role === "user" ? "justify-end" : ""
+                            }`}
                         >
                           {message.role === "assistant" && (
                             <Avatar className="h-8 w-8 bg-primary">
                               <Bot className="h-4 w-4 text-primary-foreground" />
                             </Avatar>
                           )}
-                          
+
                           <Card
-                            className={`p-3 max-w-[80%] ${
-                              message.role === "user"
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted"
-                            }`}
+                            className={`p-3 max-w-[80%] ${message.role === "user"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted"
+                              }`}
                           >
                             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                           </Card>
-                          
+
                           {message.role === "user" && (
                             <Avatar className="h-8 w-8 bg-secondary">
                               <User className="h-4 w-4 text-secondary-foreground" />
@@ -412,7 +429,7 @@ export default function ChatInterface() {
                       <div ref={messagesEndRef} />
                     </div>
                   </ScrollArea>
-                  
+
                   <form onSubmit={handleSubmit} className="p-4 border-t flex gap-2 bg-background">
                     <Input
                       ref={inputRef}
@@ -431,18 +448,18 @@ export default function ChatInterface() {
             </div>
           )}
         </div>
-        
+
         {/* File Details Sidebar */}
         {file && !isChatFloating && (
           <div className="w-[300px] border-l bg-muted/30 overflow-auto hidden md:block">
-            <FileDetails 
-              file={file} 
+            <FileDetails
+              file={file}
               onRemove={handleRemoveFile}
               onUploadNew={handleUploadNew}
             />
           </div>
         )}
-        
+
         {/* Floating Chat Interface */}
         {isChatFloating && file && isChatOpen && (
           <div className="fixed bottom-4 right-4 w-[350px] h-[500px] bg-background border rounded-lg shadow-lg flex flex-col z-10">
@@ -457,32 +474,30 @@ export default function ChatInterface() {
                 </Button>
               </div>
             </div>
-            
+
             <ScrollArea className="flex-1 p-4 h-full overflow-y-auto">
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex items-start gap-3 ${
-                      message.role === "user" ? "justify-end" : ""
-                    }`}
+                    className={`flex items-start gap-3 ${message.role === "user" ? "justify-end" : ""
+                      }`}
                   >
                     {message.role === "assistant" && (
                       <Avatar className="h-8 w-8 bg-primary">
                         <Bot className="h-4 w-4 text-primary-foreground" />
                       </Avatar>
                     )}
-                    
+
                     <Card
-                      className={`p-3 max-w-[80%] ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
-                      }`}
+                      className={`p-3 max-w-[80%] ${message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                        }`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     </Card>
-                    
+
                     {message.role === "user" && (
                       <Avatar className="h-8 w-8 bg-secondary">
                         <User className="h-4 w-4 text-secondary-foreground" />
@@ -493,7 +508,7 @@ export default function ChatInterface() {
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
-            
+
             <form onSubmit={handleSubmit} className="p-4 border-t flex gap-2 bg-background">
               <Input
                 value={input}
@@ -507,7 +522,7 @@ export default function ChatInterface() {
             </form>
           </div>
         )}
-        
+
         {/* Floating Chat Button */}
         {isChatFloating && file && !isChatOpen && (
           <Button
@@ -528,7 +543,7 @@ export default function ChatInterface() {
               View the transcription and summary of the uploaded file.
             </DialogDescription>
           </DialogHeader>
-          
+
           <ScrollArea className="flex-1 mt-4 h-full overflow-auto">
             <div className="space-y-6 pr-4">
               <div>
@@ -537,7 +552,7 @@ export default function ChatInterface() {
                   {transcript || "No transcript available."}
                 </p>
               </div>
-              
+
               {summary && (
                 <div>
                   <h2 className="text-lg font-bold">✨ Summary:</h2>
@@ -548,7 +563,7 @@ export default function ChatInterface() {
               )}
             </div>
           </ScrollArea>
-          
+
           <DialogClose asChild>
             <Button className="mt-4">
               Close
