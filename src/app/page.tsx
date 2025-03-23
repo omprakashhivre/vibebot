@@ -1,5 +1,5 @@
 "use client"
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import AuthForm from "@/components/auth-form";
 import { useEffect } from "react";
 import verifyToken from "@/lib/verify-token";
@@ -22,6 +22,7 @@ export default function Home() {
     })
     .catch((err) => {
       // Handle expired token or other error cases
+      console.log(err)
 
     })
   }, [])

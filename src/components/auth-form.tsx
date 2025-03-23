@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Loader2, Eye, EyeOff, User, Mail, Lock } from "lucide-react"
-import Cookies from "js-cookie"
+// import Cookies from "js-cookie"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

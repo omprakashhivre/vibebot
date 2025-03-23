@@ -5,8 +5,12 @@ export async function middleware(req: NextRequest) {
     console.log("✅ Global Middleware: middleware called - 001");
 
     // const { cookies } = req;
+    // console.log(cookies);
+    
     // const token = cookies.get("access_token")?.value || "";
-    // const { pathname } = req.nextUrl;
+    const { pathname } = req.nextUrl;
+    console.log(pathname);
+    
 
     // const publicPaths = ["/"];
     // const isPublicPath = publicPaths.includes(pathname);

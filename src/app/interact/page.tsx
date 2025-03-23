@@ -45,7 +45,7 @@ export default function ChatInterface() {
         }
         return
       })
-      .catch((_err) => {
+      .catch(() => {
         router.push("/");
       })
   }, []);
