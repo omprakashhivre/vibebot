@@ -21,7 +21,6 @@ const loginSchema = z.object({
     message: "Password must be at least 6 characters",
   }),
 })
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 const registerSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
@@ -95,7 +94,6 @@ export default function AuthForm() {
       }
     })
     .then((res) => {
-      const data = res.data
       alert("Registered successfully, please login")
       // sessionStorage.setItem("access_token", data.access_token);
       setActiveTab("login")        

@@ -15,7 +15,7 @@ import Cookies from "js-cookie"
 import { v4 as uuidv4 } from 'uuid';
 import { Send, Bot, User, ChevronDown, ChevronUp, PanelRight, PanelLeft, X, Maximize2, Minimize2, LogOut, Upload, FileText, UploadCloud } from 'lucide-react'
 import { 
-  DropdownMenu, DropdownMenuContent, DropdownMenuGroup, 
+  DropdownMenu, DropdownMenuContent, 
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/dialog"
 import Spinner from "@/components/spinner"
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
 export default function ChatInterface() {
   const router = useRouter()

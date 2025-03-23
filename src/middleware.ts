@@ -1,18 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// ✅ Sanitize headers for security logs
-const sanitizeHeaders = (headers: Headers) => {
-    const headersObj: Record<string, string> = {};
-    headers.forEach((value, key) => {
-        headersObj[key] = value;
-    });
-    ["authorization", "cookie", "cookies"].forEach((key) => {
-        if (headersObj[key]) headersObj[key] = "REDACTED";
-    });
-    return headersObj;
-};
-
-// ✅ Correct BASE_URL for server
 const BASE_URL = process.env.BASE_URL || "http://localhost:8000";
 
 // ✅ Verify token with FastAPI
