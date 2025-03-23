@@ -72,7 +72,10 @@ export default function AuthForm() {
         Cookies.set("access_token", data.access_token);
         Cookies.set("username", data.username);
         // sessionStorage.setItem("access_token", data.access_token);
-        router.push("/interact")        
+        setTimeout(() => {
+          alert("Login successful")
+          router.push("/interact")        
+        }, 20);
       })
       .catch((error) => {
         console.error("Login error:", error)
@@ -204,7 +207,7 @@ export default function AuthForm() {
             </CardContent>
             <CardFooter className="flex justify-center border-t border-slate-700 pt-4">
               <p className="text-sm text-slate-400">
-                Don&lsquo;t have an account?
+                Don&lsquo;t have an account? { }
                 <button
                   onClick={() => setActiveTab("register")}
                   className="text-purple-400 hover:text-purple-300 hover:underline transition-colors"
