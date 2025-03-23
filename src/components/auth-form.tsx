@@ -69,13 +69,15 @@ export default function AuthForm() {
       })
       .then((res) => {
         const data = res.data
+        console.log("user data ===== > > > >> > > ", data);
+        
         Cookies.set("access_token", data.access_token);
         Cookies.set("username", data.username);
         // sessionStorage.setItem("access_token", data.access_token);
-        setTimeout(() => {
+        // setTimeout(() => {
           alert("Login successful")
           router.push("/interact")        
-        }, 20);
+        // }, 20);
       })
       .catch((error) => {
         console.error("Login error:", error)

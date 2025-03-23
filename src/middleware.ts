@@ -69,6 +69,7 @@ export async function middleware(req: NextRequest) {
 // ✅ Config - Apply Middleware to required paths
 export const config = {
     matcher: [
-        "/((?!api|_next/static|_next/image|favicon.ico).*)",
+      '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    //   "/((?!api/logs|api/auth|_next/static|_next/image|favicon.ico).*)",
     ],
-};
+  };
