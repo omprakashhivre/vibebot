@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Loader2, Eye, EyeOff, User, Mail, Lock } from "lucide-react"
-// import Cookies from "js-cookie"
+import Cookies from "js-cookie"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -71,8 +71,8 @@ export default function AuthForm() {
         const data = res.data
         // console.log("user data ===== > > > >> > > ", data);
         
-        // Cookies.set("access_token", data.access_token);
-        // Cookies.set("username", data.username);
+        Cookies.set("access_token", data.access_token);
+        Cookies.set("username", data.username);
         sessionStorage.setItem("access_token", data.access_token);
         sessionStorage.setItem("username", data.username);
         // setTimeout(() => {
