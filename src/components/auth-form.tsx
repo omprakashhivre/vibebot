@@ -96,6 +96,8 @@ export default function AuthForm() {
     .then((res) => {
       alert("Registered successfully, please login")
       // sessionStorage.setItem("access_token", data.access_token);
+      console.log(res.data);
+      
       setActiveTab("login")        
     })
     .catch((error) => {
@@ -202,7 +204,7 @@ export default function AuthForm() {
             </CardContent>
             <CardFooter className="flex justify-center border-t border-slate-700 pt-4">
               <p className="text-sm text-slate-400">
-                Don't have an account?{" "}
+                Don't have an account?
                 <button
                   onClick={() => setActiveTab("register")}
                   className="text-purple-400 hover:text-purple-300 hover:underline transition-colors"

@@ -170,7 +170,7 @@ export default function ChatInterface() {
             : msg
         )
       )
-    } catch (error: any) {
+    } catch (error) {
       console.error("API Error:", error)
       // Replace thinking message with error message
       setMessages(prev => 
@@ -206,7 +206,7 @@ export default function ChatInterface() {
     setIsChatFloating(!isChatFloating)
   }
   
-  const handleRemoveFile:any = () => {
+  const handleRemoveFile = () => {
     setFile(null)
     setTranscript(null)
     setSummary(null)
