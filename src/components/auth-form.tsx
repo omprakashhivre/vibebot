@@ -71,8 +71,8 @@ export default function AuthForm() {
         const data = res.data
         // console.log("user data ===== > > > >> > > ", data);
         
-        Cookies.set("access_token", data.access_token);
-        Cookies.set("username", data.username);
+        // Cookies.set("access_token", data.access_token);
+        // Cookies.set("username", data.username);
         sessionStorage.setItem("access_token", data.access_token);
         sessionStorage.setItem("username", data.username);
         // setTimeout(() => {
